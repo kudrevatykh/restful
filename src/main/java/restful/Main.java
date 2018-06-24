@@ -1,8 +1,8 @@
 package restful;
 
-import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
-import org.slf4j.LoggerFactory;
+import javax.ws.rs.core.Application;
 
+import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import io.undertow.Undertow;
 import restful.dao.AccountDaoImpl;
 
@@ -12,19 +12,19 @@ public class Main {
 		UndertowJaxrsServer server = new UndertowJaxrsServer();
         Undertow.Builder serverBuilder = Undertow.builder().addHttpListener(8080, "0.0.0.0");
         server.start(serverBuilder);
-        LoggerFactory.getLogger(Main.class).info("started server");
         try {
-            deploy(server);
+            server.deploy(createApp());
         } catch (Exception e) {
         	server.stop();
         	throw e;
         }
         
 	}
-	private static void deploy(UndertowJaxrsServer server) {
+	
+	private static Application createApp() {
 		App app = new App();
 		app.setAccountDao(new AccountDaoImpl());
-        server.deploy(app);
+		return app;
 	}
 
 }
