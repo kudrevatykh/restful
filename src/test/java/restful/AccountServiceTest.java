@@ -16,22 +16,26 @@ import restful.dto.Account;
 public class AccountServiceTest {
 	
 	AccountDao accountDao;
-	App app;
 	AccountService service;
 	
 	@Before
 	public void setUp() {
 		accountDao = Mockito.mock(AccountDao.class);
-		app = new App();
-		app.setAccountDao(accountDao);
 		service = new AccountService();
-		service.setApp(app);
+		service.setDao(accountDao);
+	}
+	
+	private Account createAccount() {
+		Account acc = new Account();
+		acc.setAmount(BigDecimal.ZERO);
+		acc.setId("1");
+		return acc;
 	}
 
    @Test
    public void testCreateAccount() throws Exception
    {
-	   Mockito.when(accountDao.createAccount(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(new Account("1", BigDecimal.ZERO)));
+	   Mockito.when(accountDao.createAccount(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(createAccount()));
 	   Account account = (Account) service.createAccount("1", BigDecimal.ZERO).getEntity();
 	   Assert.assertEquals(BigDecimal.ZERO, account.getAmount());
 	   Assert.assertEquals("1", account.getId());
@@ -48,7 +52,7 @@ public class AccountServiceTest {
    @Test
    public void testGet() throws Exception
    {
-	   Mockito.when(accountDao.getAccount(Mockito.anyString())).thenReturn(Optional.of(new Account("1", BigDecimal.ZERO)));
+	   Mockito.when(accountDao.getAccount(Mockito.anyString())).thenReturn(Optional.of(createAccount()));
 	   Account account = (Account) service.getAccount("1").getEntity();
 	   Assert.assertEquals(BigDecimal.ZERO, account.getAmount());
 	   Assert.assertEquals("1", account.getId());

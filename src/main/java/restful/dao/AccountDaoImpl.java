@@ -13,7 +13,7 @@ public class AccountDaoImpl implements AccountDao {
 
 	@Override
 	public Optional<Account> createAccount(String id, BigDecimal amount) {
-		Account acc = new Account(id, amount);
+		Account acc = new Account(id, amount, 1L);
 		Account exists = map.putIfAbsent(id, acc);
 		if(exists!=null) {
 			return Optional.empty();
@@ -24,6 +24,11 @@ public class AccountDaoImpl implements AccountDao {
 	@Override
 	public Optional<Account> getAccount(String id) {
 		return Optional.ofNullable(map.get(id));
+	}
+	
+	@Override
+	public boolean replace(Account oldAccount, Account newAccount) {
+		return map.replace(oldAccount.getId(), oldAccount, newAccount);
 	}
 
 }

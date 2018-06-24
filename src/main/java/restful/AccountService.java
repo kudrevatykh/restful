@@ -3,6 +3,9 @@ package restful;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -24,22 +27,27 @@ import restful.dto.Account;
 @Path("/account/{id}")
 public class AccountService {
 	
-	private App app;
+	private AccountDao dao;
 	
 	private static Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
 
 	@Context
 	public void setApp(Application app) {
-		this.app = (App) app;
+		this.setDao(((App) app).getAccountDao());
 	}
+	
+	public void setDao(AccountDao dao) {
+		this.dao = dao;
+	}
+
 
 	@PUT
 	public Response createAccount(
-			@PathParam("id") String id,
-			@DefaultValue("0") @QueryParam("initialAmount") BigDecimal amount
+			@NotNull @Size(min=1) @PathParam("id") String id,
+			@DefaultValue("0") @DecimalMin("0") @QueryParam("initialAmount") BigDecimal amount
 			) {
 		LOGGER.debug("creating account {}", id);
-		Optional<Account> account = getDao().createAccount(id, amount);
+		Optional<Account> account = dao.createAccount(id, amount);
 		return account.map(
 				a->Response.ok().entity(a).type(MediaType.APPLICATION_JSON_TYPE).build()
 		).orElseGet(
@@ -49,8 +57,8 @@ public class AccountService {
 	}
 	
 	@GET
-	public Response getAccount(@PathParam("id") String id) {
-		Optional<Account> account = getDao().getAccount(id);
+	public Response getAccount(@NotNull @Size(min=1) @PathParam("id") String id) {
+		Optional<Account> account = dao.getAccount(id);
 		return account.map(
 				a->Response.ok().entity(a).type(MediaType.APPLICATION_JSON_TYPE).build()
 		).orElseGet(
@@ -59,8 +67,4 @@ public class AccountService {
 
 	}
 	
-	private AccountDao getDao() {
-		return app.getAccountDao();
-	}
-
 }

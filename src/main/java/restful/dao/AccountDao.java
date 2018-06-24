@@ -11,4 +11,6 @@ public interface AccountDao {
 	
 	public Optional<Account> getAccount(String id);
 
+	boolean replace(Account oldAccount, Account newAccount);
+
 }

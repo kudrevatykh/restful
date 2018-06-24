@@ -16,6 +16,7 @@ public class App extends Application {
      {
         HashSet<Class<?>> classes = new HashSet<Class<?>>();
         classes.add(AccountService.class);
+        classes.add(AccountTransferService.class);
         return classes;
      }
 
