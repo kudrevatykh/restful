@@ -28,7 +28,9 @@ public class AccountDaoImpl implements AccountDao {
 	
 	@Override
 	public boolean replace(Account oldAccount, Account newAccount) {
-		return map.replace(oldAccount.getId(), oldAccount, newAccount);
+		return map.compute(oldAccount.getId(),
+				(k, v)->oldAccount.getVersion()==v.getVersion()?newAccount:oldAccount
+			) == newAccount;
 	}
 
 }

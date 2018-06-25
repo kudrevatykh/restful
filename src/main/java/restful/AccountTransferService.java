@@ -39,6 +39,9 @@ public class AccountTransferService {
 			@NotNull @Size(min=1) @FormParam("from") String fromId,
 			@NotNull @Size(min=1) @FormParam("to") String toId,
 			@NotNull @DecimalMin(value = "0", inclusive=false) @FormParam("amount") BigDecimal amount) {
+		if(fromId.equals(toId)) {
+			return Response.status(Status.BAD_REQUEST).entity("from account should not be same as to accont").build();
+		}
 		Optional<Account> from = dao.getAccount(fromId);
 		if(!from.isPresent()) {
 			return Response.status(Status.NOT_FOUND).entity("from account not found").build();

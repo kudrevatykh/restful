@@ -1,7 +1,6 @@
 package restful.dto;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -39,23 +38,6 @@ public class Account {
 	@XmlTransient
 	public long getVersion() {
 		return version;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (obj.getClass() != this.getClass()) return false;
-
-        Account a = (Account) obj;
-
-		return Objects.equals(id, a.id) &&
-				Objects.equals(version, a.version);
-	}
-	
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, version);
 	}
 
 }

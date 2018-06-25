@@ -33,6 +33,14 @@ public class AccountTransferServiceTest {
 	}
 
    @Test
+   public void testTransferSameAccount() throws Exception
+   {
+	   Status status = service.transfer("1", "1", BigDecimal.valueOf(100)).getStatusInfo().toEnum();
+	   Assert.assertEquals(Status.BAD_REQUEST, status);
+   }
+
+	
+   @Test
    public void testAccountNotFound() throws Exception
    {
 	   Mockito.when(accountDao.getAccount(Mockito.anyString())).thenReturn(Optional.empty());
@@ -89,7 +97,11 @@ public class AccountTransferServiceTest {
 	   Assert.assertEquals(15 - 5, newAccounts.get(1).getAmount().intValue());
 	   Assert.assertEquals(0 + 5, newAccounts.get(2).getAmount().intValue());
 	   Assert.assertEquals(1 + 5, newAccounts.get(3).getAmount().intValue());
-
+	   
+	   for(int i = 0;i<oldAccounts.size();++i) {
+		   Assert.assertEquals(newAccounts.get(i).getId(), oldAccounts.get(i).getId());
+	   }
+	   
 	   Mockito.verifyNoMoreInteractions(accountDao);
    }
 
