@@ -45,7 +45,7 @@ public class AppTest {
 	   {
 		  App app = new App();
 		  AccountDao dao = Mockito.mock(AccountDao.class);
-		  Mockito.when(dao.createAccount(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(new Account()));
+		  Mockito.when(dao.createAccount(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(new Account("1", BigDecimal.ZERO, 0)));
 		  app.setAccountDao(dao);
 	      server.deploy(app);
 	      Client client = ClientBuilder.newClient();

@@ -16,13 +16,14 @@ public class Account {
 	
 	private long version;
 	
-	public Account() {
+	@SuppressWarnings("unused")//for jaxb
+	private Account() {
 	}
 	
 	public Account(String id, BigDecimal amount, long version) {
 		this.id = id;
 		this.amount = amount;
-		this.setVersion(version);
+		this.version = version;
 	}
 	
 	@XmlElement
@@ -30,37 +31,31 @@ public class Account {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	@XmlElement
 	public BigDecimal getAmount() {
 		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
 	}
 
 	@XmlTransient
 	public long getVersion() {
 		return version;
 	}
-
-	public void setVersion(long version) {
-		this.version = version;
-	}
 	
 	@Override
 	public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Account)) return false;
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
 
         Account a = (Account) obj;
 
 		return Objects.equals(id, a.id) &&
 				Objects.equals(version, a.version);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, version);
 	}
 
 }

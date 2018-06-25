@@ -25,17 +25,15 @@ public class AccountServiceTest {
 		service.setDao(accountDao);
 	}
 	
-	private Account createAccount() {
-		Account acc = new Account();
-		acc.setAmount(BigDecimal.ZERO);
-		acc.setId("1");
-		return acc;
+	private Optional<Account> createAccount() {
+		Account acc = new Account("1", BigDecimal.ZERO, 0);
+		return Optional.of(acc);
 	}
 
    @Test
    public void testCreateAccount() throws Exception
    {
-	   Mockito.when(accountDao.createAccount(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of(createAccount()));
+	   Mockito.when(accountDao.createAccount(Mockito.anyString(), Mockito.any())).thenReturn(createAccount());
 	   Account account = (Account) service.createAccount("1", BigDecimal.ZERO).getEntity();
 	   Assert.assertEquals(BigDecimal.ZERO, account.getAmount());
 	   Assert.assertEquals("1", account.getId());
@@ -52,7 +50,7 @@ public class AccountServiceTest {
    @Test
    public void testGet() throws Exception
    {
-	   Mockito.when(accountDao.getAccount(Mockito.anyString())).thenReturn(Optional.of(createAccount()));
+	   Mockito.when(accountDao.getAccount(Mockito.anyString())).thenReturn(createAccount());
 	   Account account = (Account) service.getAccount("1").getEntity();
 	   Assert.assertEquals(BigDecimal.ZERO, account.getAmount());
 	   Assert.assertEquals("1", account.getId());

@@ -28,10 +28,7 @@ public class AccountTransferServiceTest {
 	}
 	
 	private Optional<Account> createAccount(long amount, long version) {
-		Account acc = new Account();
-		acc.setAmount(BigDecimal.valueOf(amount));
-		acc.setId("1");
-		acc.setVersion(version);
+		Account acc = new Account("1", BigDecimal.valueOf(amount), version);
 		return Optional.of(acc);
 	}
 
