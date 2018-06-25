@@ -22,24 +22,28 @@ import restful.dto.Account;
 @Path("/transfer")
 public class AccountTransferService {
 	
-	private App app;
-
+	private AccountDao dao;
+	
 	@Context
 	public void setApp(Application app) {
-		this.app = (App) app;
+		this.setDao(((App) app).getAccountDao());
 	}
 	
+	public void setDao(AccountDao dao) {
+		this.dao = dao;
+	}
+
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response transfer(
 			@NotNull @Size(min=1) @FormParam("from") String fromId,
 			@NotNull @Size(min=1) @FormParam("to") String toId,
 			@NotNull @DecimalMin(value = "0", inclusive=false) @FormParam("amount") BigDecimal amount) {
-		Optional<Account> from = getDao().getAccount(fromId);
+		Optional<Account> from = dao.getAccount(fromId);
 		if(!from.isPresent()) {
 			return Response.status(Status.NOT_FOUND).entity("from account not found").build();
 		}
-		Optional<Account> to = getDao().getAccount(toId);
+		Optional<Account> to = dao.getAccount(toId);
 		if(!to.isPresent()) {
 			return Response.status(Status.NOT_FOUND).entity("to account not found").build();
 		}
@@ -49,28 +53,23 @@ public class AccountTransferService {
 			}
 			Account acc = from.get();
 			Account result = new Account(acc.getId(), acc.getAmount().subtract(amount), acc.getVersion()+1);
-			if(getDao().replace(acc, result)) {
+			if(dao.replace(acc, result)) {
 				break;
 			} else {
-				from = getDao().getAccount(fromId);
+				from = dao.getAccount(fromId);
 			}
 		}
 		while(true) {
 			Account acc = to.get();
 			Account result = new Account(acc.getId(), acc.getAmount().add(amount), acc.getVersion()+1);
-			if(getDao().replace(acc, result)) {
+			if(dao.replace(acc, result)) {
 				break;
 			} else {
-				to = getDao().getAccount(toId);
+				to = dao.getAccount(toId);
 			}
 		}
 		return Response.ok().build();
 		
 	}
-	
-	private AccountDao getDao() {
-		return app.getAccountDao();
-	}
-
 
 }
